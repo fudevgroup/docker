@@ -1,4 +1,4 @@
-FROM etherpad/etherpad:1.8.13
+FROM etherpad/etherpad:1.8.18
 
 USER root
 
@@ -7,15 +7,12 @@ RUN apt-get update \
 
 USER etherpad
 
-# only used to trigger a fresh run of the npm install
-# command without caching
-ENV TAG v2.3.0
-
 RUN npm install  \
-    git+https://git@github.com/pedrobmarin/ep_pad_ttl.git \
-    git+https://git@github.com/pedrobmarin/ep_redis_publisher.git \
-    git+https://git@github.com/ether/ep_disable_chat.git \
-    git+https://github.com/ether/ep_sticky_attributes.git \
+    ep_cursortrace@3.1.16 \
+    git+https://github.com/mconf/ep_pad_ttl.git#360136cd38493dd698435631f2373cbb7089082d \
+    git+https://github.com/mconf/ep_redis_publisher.git#a30a48e4bc1e501b5b102884b9a0b26c30798484 \
+    ep_disable_chat@0.0.8 \
+    ep_auth_session@1.1.1 \
 # remove npm lockfile, because somehow it prevents etherpad from detecting the manual added plugin ep_bigbluebutton_patches
     && rm package-lock.json
 

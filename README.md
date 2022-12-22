@@ -1,6 +1,9 @@
-# 📦 BigBlueButton 2.3 Docker
+<img width="1012" alt="bbb-docker-banner" src="https://user-images.githubusercontent.com/1273169/141153216-0386cd4e-0aaf-473a-8f42-a048e52ed0d7.png">
 
-Version: 2.3.14 | [Changelog](CHANGELOG.md) | [Issues](https://github.com/bigbluebutton/docker/issues)
+
+# 📦 BigBlueButton 2.5 Docker
+
+Version: 2.5.8 | [Changelog](CHANGELOG.md) | [Issues](https://github.com/bigbluebutton/docker/issues)
 
 ## Features
 - Easy installation
@@ -25,9 +28,11 @@ Version: 2.3.14 | [Changelog](CHANGELOG.md) | [Issues](https://github.com/bigblu
     4. Ensure docker-compose works and that you use a version ≥ 1.28 : `$ docker-compose --version`
 2. Clone this repository
    ```sh
-   $ git clone -b main --recurse-submodules https://github.com/bigbluebutton/docker.git bbb-docker
+   $ git clone --recurse-submodules https://github.com/bigbluebutton/docker.git bbb-docker
    $ cd bbb-docker
-   $ git submodule update --init
+
+   # use the more stable main branch (sometimes older)
+   $ git checkout main 
    ```
 3. Run setup:
    ```bash

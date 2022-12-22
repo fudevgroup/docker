@@ -1,26 +1,35 @@
-FROM node:14-alpine
+ARG BBB_BUILD_TAG
+FROM gitlab.senfcall.de:5050/senfcall-public/docker-bbb-build:$BBB_BUILD_TAG AS builder
 
-RUN apk add git \
-    && adduser -D -u 2004 -g webrtc-sfu webrtc-sfu
 
-ADD ./bbb-webrtc-sfu app
+RUN useradd --uid 2004 --user-group webrtc-sfu 
 
-WORKDIR app
+ADD ./bbb-webrtc-sfu /app
+
 
 ENV NODE_ENV production
-
 
 # due to the git submodule npm install crashes with following error:
 # npm ERR! fatal: Not a git repository: ../.git/modules/bbb-webrtc-sfu
 # we simply delete the .git file
-RUN cp config/default.example.yml config/production.yml \
- && chown -R webrtc-sfu:webrtc-sfu config \
+RUN cd /app \
+ && cp config/default.example.yml config/production.yml \
  && rm .git \
  && npm install --unsafe-perm \
- && npm cache clear --force
+ && npm cache clear --force \
+ && rm -rf node_modules/mediasoup/worker/out/Release/subprojects \
+ && rm -rf node_modules/mediasoup/worker/out/Release/mediasoup-worker.p \
+ && rm -rf node_modules/mediasoup/worker/out/Release/deps
 
-COPY docker-entrypoint.sh /app/docker-entrypoint.sh
+
+# =============================
+FROM node:14.19.1-bullseye-slim
+RUN useradd --uid 2004 --user-group webrtc-sfu 
+ENV NODE_ENV production
+
+COPY --from=builder /app /app
+RUN chown -R webrtc-sfu:webrtc-sfu /app/config
 
 USER webrtc-sfu
-ENTRYPOINT [ "./docker-entrypoint.sh" ]
+WORKDIR /app
 CMD [ "npm", "start" ]
